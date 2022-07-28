@@ -4,6 +4,7 @@ import sojern.mathapi.data.NumberAndQuantifierDTO;
 import sojern.mathapi.data.NumberDTO;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -43,14 +44,20 @@ public class CalculationService {
     }
 
     public BigDecimal calculatePercentile(NumberAndQuantifierDTO inputDataDTO){
-        //TODO
-        return null;
+        List<BigDecimal> numbersList = sortListOfNumbers(inputDataDTO.getNumbers());
+        BigDecimal size = BigDecimal.valueOf(numbersList.size());
+        BigDecimal percentile = BigDecimal.valueOf(inputDataDTO.getQuantifier());
+        BigDecimal ordinalRankOfPercentile =
+                percentile.divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
+                        .multiply(size);
+        BigDecimal nearestRank = ordinalRankOfPercentile.setScale(0, RoundingMode.CEILING);
+        return numbersList.get(nearestRank.intValue()-1);
     }
 
 
     private List<BigDecimal> sortListOfNumbers(List<BigDecimal> bigDecimals) {
         List<BigDecimal> listToSort = bigDecimals;
-        Collections.sort(listToSort, Collections.reverseOrder());
+        Collections.sort(listToSort);
         return listToSort;
     }
 }
