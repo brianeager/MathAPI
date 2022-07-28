@@ -22,7 +22,12 @@ public class MathAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response minimum(@Context HttpHeaders headers,
                           NumberAndQuantifierDTO inputData) {
-        return handleResponse(calculationService.calculateMinimum(inputData));
+        if(inputData.getNumbers().size()!=inputData.getQuantifier()){
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .entity("Number of values in array does not equal quantifier").build();
+        }else{
+            return handleResponse(calculationService.calculateMinimum(inputData));
+        }
     }
 
     @POST
@@ -31,7 +36,12 @@ public class MathAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response maximum(@Context HttpHeaders headers,
                           NumberAndQuantifierDTO inputData) {
-        return handleResponse(calculationService.calculateMaximum(inputData));
+        if(inputData.getNumbers().size()!=inputData.getQuantifier()){
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .entity("Number of values in array does not equal quantifier").build();
+        }else{
+            return handleResponse(calculationService.calculateMaximum(inputData));
+        }
     }
 
     @POST
@@ -66,7 +76,8 @@ public class MathAPI {
             return Response.status(Response.Status.OK).entity(new Gson().toJson(response)).build();
         }
         else{
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity("Error handling request").build();
+            return Response.status(Response.Status.NOT_ACCEPTABLE)
+                    .entity("Error handling request").build();
         }
     }
 }
